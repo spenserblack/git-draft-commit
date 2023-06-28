@@ -6,21 +6,21 @@ GIT_DRAFT_COMMIT_DEFAULT_MESSAGE="Draft commit message
 # Please enter the commit message for your changes.
 # When you're ready to convert your draft into a commit,
 # run 'git draft-commit --publish'"
-GIT_REPO_ROOT=$(git rev-parse --show-toplevel)
-GIT_DRAFT_PUBLISH_FILE=$GIT_REPO_ROOT/.git/COMMIT_DRAFTMSG
-GIT_DRAFT_FILE=$GIT_DRAFT_PUBLISH_FILE.draft
+GIT_REPO_ROOT="$(git rev-parse --show-toplevel)"
+GIT_DRAFT_PUBLISH_FILE="$GIT_REPO_ROOT/.git/COMMIT_DRAFTMSG"
+GIT_DRAFT_FILE="$GIT_DRAFT_PUBLISH_FILE.draft"
 
 # NOTE: Git resolves $GIT_EDITOR, git config core.editor, $VISUAL, and $EDITOR
 # 	in order.
 GIT_DRAFT_EDITOR=$GIT_EDITOR
 if [ -z "$GIT_DRAFT_EDITOR" ]; then
-	GIT_DRAFT_EDITOR=$(git config core.editor)
+	GIT_DRAFT_EDITOR="$(git config core.editor)"
 fi
 if [ -z "$GIT_DRAFT_EDITOR" ]; then
-	GIT_DRAFT_EDITOR=$VISUAL
+	GIT_DRAFT_EDITOR="$VISUAL"
 fi
 if [ -z "$GIT_DRAFT_EDITOR" ]; then
-	GIT_DRAFT_EDITOR=$EDITOR
+	GIT_DRAFT_EDITOR="$EDITOR"
 fi
 if [ -z "$GIT_DRAFT_EDITOR" ]; then
 	echo "No editor found. Defaulting to vim." >&2
@@ -33,18 +33,18 @@ show_usage() {
 }
 
 publish() {
-	mv $GIT_DRAFT_FILE $GIT_DRAFT_PUBLISH_FILE
-	git commit --file=$GIT_DRAFT_PUBLISH_FILE --edit
+	mv "$GIT_DRAFT_FILE" "$GIT_DRAFT_PUBLISH_FILE"
+	git commit --file="$GIT_DRAFT_PUBLISH_FILE" --edit
 }
 draft() {
 	# NOTE: If the draft file does not exist, create it.
-	touch $GIT_DRAFT_FILE
+	touch "$GIT_DRAFT_FILE"
 	# NOTE: If the draft file is empty, write the default message to it.
-	if [ ! -s $GIT_DRAFT_FILE ]; then
-		echo "$GIT_DRAFT_COMMIT_DEFAULT_MESSAGE" > $GIT_DRAFT_FILE
+	if [ ! -s "$GIT_DRAFT_FILE" ]; then
+		echo "$GIT_DRAFT_COMMIT_DEFAULT_MESSAGE" > "$GIT_DRAFT_FILE"
 	fi
 
-	$GIT_DRAFT_EDITOR $GIT_DRAFT_FILE
+	"$GIT_DRAFT_EDITOR" "$GIT_DRAFT_FILE"
 }
 
 case "$1" in
